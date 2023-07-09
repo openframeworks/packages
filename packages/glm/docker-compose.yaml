@@ -1,0 +1,23 @@
+version: '3.4'
+
+x-package: &default
+  volumes:
+    - .:/package
+    - ../..:/repo
+
+x-build: &build
+  context: .
+
+services:
+  glm-universal:
+    <<: *default
+    build:
+      <<: *build
+      dockerfile: ../../docker/generic/Dockerfile
+      args:
+        - PACKAGE_NAME=glm
+        - FULL_PACKAGE_NAME=glm-universal
+        - CC_COMPILER_PACKAGE=
+        - CC_COMPILER=
+        - CXX_COMPILER_PACKAGE=
+        - CXX_COMPILER=
