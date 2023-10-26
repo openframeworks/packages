@@ -1,11 +1,12 @@
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y git python3 msitools python3-simplejson python3-six ca-certificates
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y git python3 msitools python3-simplejson python3-six ca-certificates
 RUN git clone https://github.com/mstorsjo/msvc-wine.git /msvc-wine
 RUN /msvc-wine/vsdownload.py --dest /msvc --accept-license
 RUN /msvc-wine/install.sh /msvc
 
-RUN apt-get update && apt-get install -y cmake ninja-build llvm-15 clang-tools-15 lld-15 wget
+RUN apt-get install -y cmake ninja-build llvm-15 clang-tools-15 lld-15 wget
 RUN wget -O llvm.tar.gz https://github.com/llvm/llvm-project/archive/main.tar.gz    # Download as archive because git takes ages
 RUN mkdir /llvm
 RUN tar -xzf llvm.tar.gz -C /llvm --strip-components=1
