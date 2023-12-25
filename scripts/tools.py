@@ -13,6 +13,7 @@ class LibraryBuilder:
         self.cc_compiler_package = os.environ.get('CC_COMPILER_PACKAGE', None)
         self.cxx_compiler_package = os.environ.get('CXX_COMPILER_PACKAGE', None)
         self.toolchain_file = os.environ.get('TOOLCHAIN_FILE', None)
+        self.architecture = os.environ.get('ARCHITECTURE', 'unknown')
 
         self.repo_dir = os.getcwd()
         self.working_dir = os.path.join(self.repo_dir, 'temp', self.name)
@@ -23,7 +24,7 @@ class LibraryBuilder:
         self.archive_dir = os.path.join(self.working_dir, 'archive')
         self.output_dir = os.path.join(self.repo_dir, 'out')
 
-        self.package_suffix = f"-{self.version}-{platform.system().lower()}-{platform.machine().lower()}-{self.cc_compiler}"
+        self.package_suffix = f"-{self.version}-{platform.system().lower()}-{self.architecture}-{self.cc_compiler}"
         self.archive_filename = f'{self.name}{self.package_suffix}.tar.gz'
 
         print(f'>> Building package {self.name}/{self.version}')
@@ -78,7 +79,7 @@ class LibraryBuilder:
         print(f'>> Pulling dependency {package}/{version} ...')
         if not os.path.exists(depsdir):
             # Download archive from GitHub
-            url = "https://github.com/HerrNamenlos123/openFrameworks-packages/releases/download/master/" + package + "-" + version + "-" + platform.system().lower() + "-" + platform.machine().lower() + "-" + self.cc_compiler + ".tar.gz"
+            url = "https://github.com/HerrNamenlos123/openFrameworks-packages/releases/download/master/" + package + "-" + version + "-" + platform.system().lower() + "-" + self.architecture + "-" + self.cc_compiler + ".tar.gz"
             archive = tarfile.open(fileobj=urllib.request.urlopen(url), mode="r|gz")
             archive.extractall(path=depsdir)
             archive.close()

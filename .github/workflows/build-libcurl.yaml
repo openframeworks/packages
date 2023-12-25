@@ -25,7 +25,7 @@ jobs:
               CC_COMPILER: gcc-9, 
               CXX_COMPILER: g++-9, 
               TOOLCHAIN_FILE: "",
-              ARCHITECTURE: amd64
+              ARCHITECTURE: x64
             }
           - { os: windows-2022, 
               CC_COMPILER_PACKAGE: msvc, 
@@ -33,7 +33,7 @@ jobs:
               CC_COMPILER: msvc, 
               CXX_COMPILER: msvc, 
               TOOLCHAIN_FILE: "",
-              ARCHITECTURE: amd64
+              ARCHITECTURE: x64
             }
           # - { os: windows, architecture: x64, compiler: mingw }
           # - { os: windows, architecture: x64, compiler: msys2 }
