@@ -3,7 +3,8 @@ name: Build libcurl
 on:
   push:
     paths:
-      - .github/workflows/build-libcurl.yml
+      - .github/actions/build-package/action.yaml
+      - .github/workflows/build-libcurl.yaml
       - packages/libcurl/**
       - build.py
       - scripts/tools.py

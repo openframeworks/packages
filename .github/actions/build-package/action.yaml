@@ -30,6 +30,7 @@ runs:
         CXX_COMPILER=${{matrix.cfg.CXX_COMPILER}} \
         CXX_COMPILER_PACKAGE=${{matrix.cfg.CXX_COMPILER_PACKAGE}} \
         TOOLCHAIN_FILE=${{matrix.cfg.TOOLCHAIN_FILE}} \
+        ARCHITECTURE=${{matrix.cfg.ARCHITECTURE}} \
         python3 build.py $PACKAGE
   
     - name: Upload files to a GitHub release
