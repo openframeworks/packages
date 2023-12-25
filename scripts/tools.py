@@ -79,7 +79,7 @@ class LibraryBuilder:
         print(f'>> Fetching package {package}/{version} ...')
         if not os.path.exists(depsdir):
             # Download archive from GitHub
-            url = "https://github.com/HerrNamenlos123/openFrameworks-packages/releases/download/master/" + package + "-" + version + "-" + platform.system().lower() + "-" + self.architecture + "-" + self.cc_compiler + ".tar.gz"
+            url = "https://github.com/openframeworks/packages/releases/download/latest/" + package + "-" + version + "-" + platform.system().lower() + "-" + self.architecture + "-" + self.cc_compiler + ".tar.gz"
             print(f'>> Downloading {url} ...')
             archive = tarfile.open(fileobj=urllib.request.urlopen(url), mode="r|gz")
             archive.extractall(path=depsdir)
