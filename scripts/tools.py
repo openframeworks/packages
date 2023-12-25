@@ -76,14 +76,16 @@ class LibraryBuilder:
 
     def pull_of_dependency(self, package, version):
         depsdir = self.get_dependency_dir(package)
-        print(f'>> Pulling dependency {package}/{version} ...')
+        print(f'>> Fetching package {package}/{version} ...')
         if not os.path.exists(depsdir):
             # Download archive from GitHub
             url = "https://github.com/HerrNamenlos123/openFrameworks-packages/releases/download/master/" + package + "-" + version + "-" + platform.system().lower() + "-" + self.architecture + "-" + self.cc_compiler + ".tar.gz"
+            print(f'>> Downloading {url} ...')
             archive = tarfile.open(fileobj=urllib.request.urlopen(url), mode="r|gz")
             archive.extractall(path=depsdir)
             archive.close()
-        print(f'>> Pulling dependency {package}/{version} ... Done')
+            print(f'>> Downloading {url} ... Done')
+        print(f'>> Fetching package {package}/{version} ... Done')
 
     def get_dependency_dir(self, package):
         return os.path.join(self.working_dir, 'deps', package).replace("\\", "/")
