@@ -21,6 +21,7 @@ jobs:
       matrix:
         cfg:
           - { os: ubuntu-20.04,
+              COMPILER_ID: gcc9,
               CC_COMPILER_PACKAGE: gcc-9, 
               CXX_COMPILER_PACKAGE: g++-9, 
               CC_COMPILER: gcc-9, 
@@ -29,6 +30,7 @@ jobs:
               ARCHITECTURE: x64
             }
           - { os: ubuntu-20.04,
+              COMPILER_ID: clang7,
               CC_COMPILER_PACKAGE: clang-7, 
               CXX_COMPILER_PACKAGE: clang-7, 
               CC_COMPILER: clang-7, 
@@ -37,6 +39,7 @@ jobs:
               ARCHITECTURE: x64
             }
           - { os: windows-2022, 
+              COMPILER_ID: msvc,
               CC_COMPILER_PACKAGE: msvc, 
               CXX_COMPILER_PACKAGE: msvc, 
               CC_COMPILER: msvc, 

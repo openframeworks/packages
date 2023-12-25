@@ -25,6 +25,7 @@ runs:
       shell: bash
       run: |
         FULL_PACKAGE_NAME=${{matrix.cfg.FULL_PACKAGE_NAME}} \
+        COMPILER_ID=${{matrix.cfg.COMPILER_ID}} \
         CC_COMPILER=${{matrix.cfg.CC_COMPILER}} \
         CC_COMPILER_PACKAGE=${{matrix.cfg.CC_COMPILER_PACKAGE}} \
         CXX_COMPILER=${{matrix.cfg.CXX_COMPILER}} \

@@ -8,6 +8,7 @@ import urllib.request
 
 class LibraryBuilder:
     def __init__(self):
+        self.compiler_id = os.environ.get('COMPILER_ID', "unknown")
         self.cc_compiler = os.environ.get('CC_COMPILER', "unknown")
         self.cxx_compiler = os.environ.get('CXX_COMPILER', "unknown")
         self.cc_compiler_package = os.environ.get('CC_COMPILER_PACKAGE', None)
@@ -24,7 +25,7 @@ class LibraryBuilder:
         self.archive_dir = os.path.join(self.working_dir, 'archive')
         self.output_dir = os.path.join(self.repo_dir, 'out')
 
-        self.package_suffix = f"-{self.version}-{platform.system().lower()}-{self.architecture}-{self.cc_compiler}"
+        self.package_suffix = f"-{self.version}-{platform.system().lower()}-{self.architecture}-{self.compiler_id}"
         self.archive_filename = f'{self.name}{self.package_suffix}.tar.gz'
 
         print(f'>> Building package {self.name}/{self.version}')
@@ -64,10 +65,8 @@ class LibraryBuilder:
 
     def install_build_dependencies(self, extra_unix_dependencies = []):
         if platform.system() == 'Linux':
-            if self.cc_compiler != "unknown" and self.cc_compiler != 'msvc':
+            if self.compiler_id != "unknown" and self.compiler_id != 'msvc':
                 extra_unix_dependencies.append(os.environ['CC_COMPILER_PACKAGE'])
-
-            if self.cxx_compiler != "unknown" and self.cxx_compiler != 'msvc':
                 extra_unix_dependencies.append(os.environ['CXX_COMPILER_PACKAGE'])
             
             deps = ' '.join(extra_unix_dependencies)
@@ -79,7 +78,7 @@ class LibraryBuilder:
         print(f'>> Fetching package {package}/{version} ...')
         if not os.path.exists(depsdir):
             # Download archive from GitHub
-            url = "https://github.com/openframeworks/packages/releases/download/latest/" + package + "-" + version + "-" + platform.system().lower() + "-" + self.architecture + "-" + self.cc_compiler + ".tar.gz"
+            url = "https://github.com/openframeworks/packages/releases/download/latest/" + package + "-" + version + "-" + platform.system().lower() + "-" + self.architecture + "-" + self.compiler_id + ".tar.gz"
             print(f'>> Downloading {url} ...')
             archive = tarfile.open(fileobj=urllib.request.urlopen(url), mode="r|gz")
             archive.extractall(path=depsdir)
@@ -96,10 +95,8 @@ class LibraryBuilder:
                                     cmake_args_debug = [], 
                                     cmake_args_release = []):
 
-        if self.cc_compiler != "unknown" and self.cc_compiler != 'msvc':
+        if self.compiler_id != "unknown" and self.compiler_id != 'msvc':
             cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
-        
-        if self.cxx_compiler != "unknown" and self.cxx_compiler != 'msvc':
             cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
         
         if self.toolchain_file != None:
