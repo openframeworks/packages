@@ -1,0 +1,41 @@
+name: Build Package
+
+runs:
+  using: composite
+
+  steps:
+    - uses: seanmiddleditch/gha-setup-ninja@master
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{matrix.cfg.ARCHITECTURE}}
+
+    - uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: '5.32'
+
+    - name: Install Python deps
+      shell: bash
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r requirements.txt
+        [ -f packages/$PACKAGE/requirements.txt ] && python3 -m pip install -r packages/$PACKAGE/requirements.txt || true
+
+    - name: Invoke Python build script
+      shell: bash
+      run: |
+        FULL_PACKAGE_NAME=${{matrix.cfg.FULL_PACKAGE_NAME}} \
+        CC_COMPILER=${{matrix.cfg.CC_COMPILER}} \
+        CC_COMPILER_PACKAGE=${{matrix.cfg.CC_COMPILER_PACKAGE}} \
+        CXX_COMPILER=${{matrix.cfg.CXX_COMPILER}} \
+        CXX_COMPILER_PACKAGE=${{matrix.cfg.CXX_COMPILER_PACKAGE}} \
+        TOOLCHAIN_FILE=${{matrix.cfg.TOOLCHAIN_FILE}} \
+        python3 build.py $PACKAGE
+  
+    - name: Upload files to a GitHub release
+      uses: svenstaro/upload-release-action@2.6.1
+      with:
+        file: out/**.tar.gz
+        file_glob: true
+        tag: latest
+        overwrite: true

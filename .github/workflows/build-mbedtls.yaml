@@ -1,0 +1,67 @@
+name: Build mbedtls
+
+on:
+  push:
+    paths:
+      - .github/workflows/build-mbedtls.yml
+      - packages/mbedtls/**
+      - build.py
+      - scripts/tools.py
+
+jobs:
+  build:
+    runs-on: ${{ matrix.cfg.os }}
+
+    env:
+      PACKAGE: mbedtls
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - { os: ubuntu-20.04,
+              CC_COMPILER_PACKAGE: gcc-9, 
+              CXX_COMPILER_PACKAGE: g++-9, 
+              CC_COMPILER: gcc-9, 
+              CXX_COMPILER: g++-9, 
+              TOOLCHAIN_FILE: "",
+              ARCHITECTURE: amd64
+            }
+          - { os: windows-2022, 
+              CC_COMPILER_PACKAGE: msvc, 
+              CXX_COMPILER_PACKAGE: msvc, 
+              CC_COMPILER: msvc, 
+              CXX_COMPILER: msvc, 
+              TOOLCHAIN_FILE: "",
+              ARCHITECTURE: amd64
+            }
+          # - { os: windows, architecture: x64, compiler: mingw }
+          # - { os: windows, architecture: x64, compiler: msys2 }
+          # - { os: windows, architecture: x64, compiler: clang }
+          # - { os: linux, architecture: x64, compiler: gcc }
+          # - { os: linux, architecture: x64, compiler: clang }
+          # - { os: linux, architecture: x64, compiler: mingw }
+          # - { os: linux, architecture: arm64, compiler: gcc }
+          # - { os: linux, architecture: arm64, compiler: clang }
+          # - { os: linux, architecture: arm64, compiler: mingw }
+          # - { os: android, architecture: arm64, compiler: gcc }
+          # - { os: android, architecture: arm64, compiler  : clang }
+          # - { os: emscripten, architecture: emscripten, compiler: emscripten }
+          # - { os: macos, architecture: x64, compiler: gcc }
+          # - { os: macos, architecture: x64, compiler: clang }
+          # - { os: macos, architecture: arm64, compiler: gcc }
+          # - { os: macos, architecture: arm64, compiler: clang }
+          # - { os: tvos, architecture: x64, compiler: gcc }
+          # - { os: tvos, architecture: x64, compiler: clang }
+          # - { os: tvos, architecture: arm64, compiler: gcc }
+          # - { os: tvos, architecture: arm64, compiler: clang }
+          # - { os: ios, architecture: arm64, compiler: gcc }
+          # - { os: ios, architecture: arm64, compiler: clang }
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build package
+        uses: ./.github/actions/build-package
+

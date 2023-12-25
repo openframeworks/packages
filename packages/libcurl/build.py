@@ -1,34 +1,34 @@
-from scripts import tools
+from scripts.tools import LibraryBuilder
 import os
 
-tools.install_build_requirements(extra_unix_dependencies = ["python3", "python3-pip"])
-tools.cmd("pip3 install jsonschema jinja2")
+class Builder(LibraryBuilder):
+    name = "libcurl"
+    version = "8.5.0"
 
-tools.clone_git_repository(git_repository = "https://github.com/Mbed-TLS/mbedtls.git",
-                           git_tag = "v3.4.0",
-                           working_dir = "/mbedtls")
+    def source(self):
+        self.source_git_repo("https://github.com/curl/curl.git", "curl-8_5_0")
 
-tools.insert_before_file(file = "/mbedtls/source/CMakeLists.txt", insert = "set(CMAKE_C_COMPILER_ID MSVC)\n") # Patching so it thinks it's MSVC
+    def patch_sources(self):
+        self.remove_file(file = os.path.join(self.source_dir, "CMake", "FindMbedTLS.cmake"))
+        self.append_to_file(
+            file = os.path.join(self.source_dir, "CMakeLists.txt"),
+            append = "target_link_libraries(libcurl_static PUBLIC MbedTLS::mbedtls)\n",
+        )
 
-tools.build_generic_cmake_project(working_dir = "/mbedtls",
-                                  cmake_args = ["-DENABLE_TESTING=OFF",
-                                                "-DENABLE_PROGRAMS=OFF",
-                                                "-DBUILD_SHARED_LIBS=OFF",
-                                                "-DGEN_FILES=ON"])
+    def depends(self):
+        self.pull_of_dependency("mbedtls", "3.4.0")
 
-tools.clone_git_repository(git_repository = "https://github.com/curl/curl.git",
-                           git_tag = "curl-8_1_2")
-
-tools.build_generic_cmake_project(cmake_args = ["-DBUILD_SHARED_LIBS=OFF", 
-                                                "-DBUILD_CURL_EXE=OFF",
-                                                "-DENABLE_UNICODE=ON",
-                                                "-DCURL_USE_MBEDTLS=ON"])
-
-tools.archive_generic_package(files = [
-    [tools.SOURCE_DIR + "/include/openssl", "include/openssl"],
-    [tools.SOURCE_DIR + "/include/crypto", "include/crypto"],
-    [tools.INSTALL_DIR_DEBUG + f"/lib64/{tools.release_lib_name('crypto')}", f"lib-debug/{tools.release_lib_name('crypto')}"],
-    [tools.INSTALL_DIR_DEBUG + f"/lib64/{tools.release_lib_name('ssl')}", f"lib-debug/{tools.release_lib_name('ssl')}"],
-    [tools.INSTALL_DIR_RELEASE + f"/lib64/{tools.release_lib_name('crypto')}", f"lib-release/{tools.release_lib_name('crypto')}"],
-    [tools.INSTALL_DIR_RELEASE + f"/lib64/{tools.release_lib_name('ssl')}", f"lib-release/{tools.release_lib_name('ssl')}"],
-])
+    def build(self):
+        self.build_generic_cmake_project(
+            [
+                "-DBUILD_SHARED_LIBS=OFF", 
+                "-DBUILD_CURL_EXE=OFF",
+                "-DENABLE_UNICODE=ON",
+                "-DCURL_USE_MBEDTLS=ON",
+                "-DSHARE_LIB_OBJECT=OFF",
+                f'-DCMAKE_PREFIX_PATH="{self.get_dependency_dir("mbedtls")}"',
+            ]
+        )
+        
+    def package(self):
+        self.archive_generic_package()
