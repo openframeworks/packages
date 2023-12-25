@@ -28,6 +28,14 @@ jobs:
               TOOLCHAIN_FILE: "",
               ARCHITECTURE: x64
             }
+          - { os: ubuntu-20.04,
+              CC_COMPILER_PACKAGE: clang-7, 
+              CXX_COMPILER_PACKAGE: clang-7, 
+              CC_COMPILER: clang-7, 
+              CXX_COMPILER: clang++-7, 
+              TOOLCHAIN_FILE: "",
+              ARCHITECTURE: x64
+            }
           - { os: windows-2022, 
               CC_COMPILER_PACKAGE: msvc, 
               CXX_COMPILER_PACKAGE: msvc, 
