@@ -1,8 +1,15 @@
 # openFrameworks packages
 
-This repository is the continuation of [apothecary](https://github.com/openframeworks/apothecary). It is the central place where all [openFrameworks](https://github.com/openframeworks/openframeworks) dependencies are built and managed, so they can be downloaded and linked into openFrameworks projects.
+This repository is the successor to [apothecary](https://github.com/openframeworks/apothecary). It is the central place where all [openFrameworks](https://github.com/openframeworks/openframeworks) dependencies are built and managed, and downloaded on-demand by openFrameworks projects.
 
 All packages are built and served completely automated with CI, so all you have to do is commit something and wait. The package is automatically built and uploaded into the latest Release.
+
+## Hosted packages
+
+All prebuilt binary packages can be found at:  
+https://github.com/openframeworks/packages/releases/tag/latest
+
+They are intended to be downloaded by scripts, not users.
 
 ## Building a package locally
 
