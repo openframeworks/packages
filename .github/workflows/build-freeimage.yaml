@@ -21,11 +21,11 @@ jobs:
       matrix:
         cfg:
           - { os: ubuntu-20.04,
-              COMPILER_ID: gcc9,
-              CC_COMPILER_PACKAGE: gcc-9, 
-              CXX_COMPILER_PACKAGE: g++-9, 
-              CC_COMPILER: gcc-9, 
-              CXX_COMPILER: g++-9, 
+              COMPILER_ID: gcc7,
+              CC_COMPILER_PACKAGE: gcc-7, 
+              CXX_COMPILER_PACKAGE: g++-7, 
+              CC_COMPILER: gcc-7, 
+              CXX_COMPILER: g++-7, 
               TOOLCHAIN_FILE: "",
               ARCHITECTURE: x64
             }
@@ -35,6 +35,15 @@ jobs:
               CXX_COMPILER_PACKAGE: clang-7, 
               CC_COMPILER: clang-7, 
               CXX_COMPILER: clang++-7, 
+              TOOLCHAIN_FILE: "",
+              ARCHITECTURE: x64
+            }
+          - { os: ubuntu-20.04,
+              COMPILER_ID: mingw64,
+              CC_COMPILER_PACKAGE: gcc-mingw-w64-x86-64, 
+              CXX_COMPILER_PACKAGE: g++-mingw-w64-x86-64, 
+              CC_COMPILER: x86_64-w64-mingw32-gcc, 
+              CXX_COMPILER: x86_64-w64-mingw32-g++, 
               TOOLCHAIN_FILE: "",
               ARCHITECTURE: x64
             }
