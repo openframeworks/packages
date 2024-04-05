@@ -136,6 +136,8 @@ class LibraryBuilder:
         args_release.append(' '.join(cmake_args))
         args_release.append(' '.join(cmake_args_release))
 
+        self.cmd("ls -R /home/runner/work/packages/packages/temp/libcurl/deps/mbedtls")
+
         log(f'Building Debug configuration ...')
         self.cmd(f'cmake -G Ninja {self.source_dir} -B {self.debug_build_dir} {" ".join(args_debug)}')
         self.cmd(f'cmake --build {self.debug_build_dir} --config Debug --target install')
