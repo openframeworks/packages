@@ -6,6 +6,9 @@ import tarfile
 import platform
 import urllib.request
 
+def log(msg):
+    print(f'[OF] >> {msg}')
+
 class LibraryBuilder:
     def __init__(self):
         self.compiler_id = os.environ.get('COMPILER_ID', "unknown")
@@ -28,17 +31,19 @@ class LibraryBuilder:
         self.package_suffix = f"-{self.version}-{platform.system().lower()}-{self.architecture}-{self.compiler_id}"
         self.archive_filename = f'{self.name}{self.package_suffix}.tar.gz'
 
-        print(f'>> Building package {self.name}/{self.version}')
-        print(f'>> Cleaning working directory {self.working_dir} ...')
+        log(f'Building package {self.name}/{self.version}')
+        log(f'Cleaning working directory {self.working_dir} ...')
         if os.path.exists(self.working_dir):
             git.rmtree(self.working_dir)
-        print(f'>> Cleaning working directory {self.working_dir} ... Done')
+        log(f'Cleaning working directory {self.working_dir} ... Done')
 
     def cmd(self, command):
+        log(f'Executing command: {command}')
         if os.system(command) != 0:
             raise Exception(f'Failed to execute command: {command}')
 
     def replace_in_file(self, file, find, replace):
+        log(f"Replacing text '{find}' with '{replace}' in file {file}")
         with open(file, 'r') as f:
             content = f.read()
         content = content.replace(find, replace)
@@ -46,13 +51,16 @@ class LibraryBuilder:
             f.write(content)
 
     def append_to_file(self, file, append):
+        log(f"Appending text '{append}' to file {file}")
         with open(file, 'a') as f:
             f.write(append)
 
     def remove_file(self, file):
+        log(f"Removing file {file}")
         os.remove(file)
 
     def insert_head_file(self, file, insert):
+        log(f"Inserting '{insert}' at the front in file {file}")
         with open(file, 'r') as f:
             content = f.read()
         content = insert + content
@@ -60,8 +68,10 @@ class LibraryBuilder:
             f.write(content)
 
     def source_git_repo(self, git_repository, git_tag):
+        log(f"Sourcing git repository {git_repository}:{git_tag} ...")
         self.cmd('git config --global advice.detachedHead false')
         self.cmd(f'git clone {git_repository} {self.source_dir} --depth=1 --single-branch --branch={git_tag}')
+        log(f"Sourcing git repository {git_repository}:{git_tag} ... Done")
 
     def install_build_dependencies(self, extra_unix_dependencies = []):
         if platform.system() == 'Linux':
@@ -70,21 +80,22 @@ class LibraryBuilder:
                 extra_unix_dependencies.append(os.environ['CXX_COMPILER_PACKAGE'])
             
             deps = ' '.join(extra_unix_dependencies)
+            log(f"Installing extra unix dependencies ...")
             if os.system(f'apt-get update && apt-get install -y {deps}') != 0:
                 self.cmd(f'sudo apt-get update && sudo apt-get install -y {deps}')
+            log(f"Installing extra unix dependencies ... Done")
 
     def pull_of_dependency(self, package, version):
         depsdir = self.get_dependency_dir(package)
-        print(f'>> Fetching package {package}/{version} ...')
+        log(f'Fetching package {package}/{version} ...')
         if not os.path.exists(depsdir):
-            # Download archive from GitHub
             url = "https://github.com/openframeworks/packages/releases/download/latest/" + package + "-" + version + "-" + platform.system().lower() + "-" + self.architecture + "-" + self.compiler_id + ".tar.gz"
-            print(f'>> Downloading {url} ...')
+            log(f'Downloading {url} ...')
             archive = tarfile.open(fileobj=urllib.request.urlopen(url), mode="r|gz")
             archive.extractall(path=depsdir)
             archive.close()
-            print(f'>> Downloading {url} ... Done')
-        print(f'>> Fetching package {package}/{version} ... Done')
+            log(f'Downloading {url} ... Done')
+        log(f'Fetching package {package}/{version} ... Done')
 
     def get_dependency_dir(self, package):
         return os.path.join(self.working_dir, 'deps', package).replace("\\", "/")
@@ -95,12 +106,12 @@ class LibraryBuilder:
                                     cmake_args_debug = [], 
                                     cmake_args_release = []):
 
-        if self.compiler_id != "unknown" and self.compiler_id != 'msvc':
-            cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
-            cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
-        
         if self.toolchain_file != None and self.toolchain_file != "":
             cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE={os.path.join(self.repo_dir, self.toolchain_file)}')
+        else:
+            if self.compiler_id != "unknown" and self.compiler_id != 'msvc':
+                cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
+                cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
 
         cmake_args.append(f'-DBUILD_SHARED_LIBS=OFF')
         cmake_args.append(f'-DPython_ROOT_DIR={os.path.dirname(sys.executable)}')
@@ -125,17 +136,18 @@ class LibraryBuilder:
         args_release.append(' '.join(cmake_args))
         args_release.append(' '.join(cmake_args_release))
 
-        print(f'>> Building Debug configuration ...')
+        log(f'Building Debug configuration ...')
         self.cmd(f'cmake -G Ninja {self.source_dir} -B {self.debug_build_dir} {" ".join(args_debug)}')
         self.cmd(f'cmake --build {self.debug_build_dir} --config Debug --target install')
-        print(f'>> Building Debug configuration ... Done')
+        log(f'Building Debug configuration ... Done')
 
-        print(f'>> Building Release configuration ...')
+        log(f'Building Release configuration ...')
         self.cmd(f'cmake -G Ninja {self.source_dir} -B {self.release_build_dir} {" ".join(args_release)}')
         self.cmd(f'cmake --build {self.release_build_dir} --config Release --target install')
-        print(f'>> Building Release configuration ... Done')
+        log(f'Building Release configuration ... Done')
 
     def archive_generic_package(self, files = None):
+        log(f'Archiving as a generic package ...')
         os.makedirs(self.archive_dir, exist_ok=True)
         os.makedirs(self.output_dir, exist_ok=True)
 
@@ -167,3 +179,5 @@ class LibraryBuilder:
             for file in os.listdir(os.path.abspath(self.archive_dir)):
                 filepath = os.path.join(self.archive_dir, file)
                 tar.add(filepath, arcname = os.path.basename(filepath))
+                
+        log(f'Archiving as a generic package ... Done')
