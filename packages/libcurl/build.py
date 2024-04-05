@@ -3,10 +3,10 @@ import os
 
 class Builder(LibraryBuilder):
     name = "libcurl"
-    version = "8.5.0"
+    version = "8.7.1"
 
     def source(self):
-        self.source_git_repo("https://github.com/curl/curl.git", "curl-8_5_0")
+        self.source_git_repo("https://github.com/curl/curl.git", "curl-8_7_1")
 
     def patch_sources(self):
         self.remove_file(file = os.path.join(self.source_dir, "CMake", "FindMbedTLS.cmake"))
@@ -24,6 +24,7 @@ class Builder(LibraryBuilder):
                 "-DBUILD_SHARED_LIBS=OFF", 
                 "-DBUILD_CURL_EXE=OFF",
                 "-DENABLE_UNICODE=ON",
+                "-DCURL_USE_OPENSSL=OFF",
                 "-DCURL_USE_MBEDTLS=ON",
                 "-DSHARE_LIB_OBJECT=OFF",
                 f'-DCMAKE_PREFIX_PATH="{self.get_dependency_dir("mbedtls")}"',
