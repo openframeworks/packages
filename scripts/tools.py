@@ -100,7 +100,7 @@ class LibraryBuilder:
             cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
         
         if self.toolchain_file != None:
-            cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE={self.toolchain_file}')
+            cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE={os.path.join(self.repo_dir, self.toolchain_file)}')
 
         cmake_args.append(f'-DBUILD_SHARED_LIBS=OFF')
         cmake_args.append(f'-DPython_ROOT_DIR={os.path.dirname(sys.executable)}')
