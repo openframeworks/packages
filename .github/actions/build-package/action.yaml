@@ -21,13 +21,6 @@ runs:
         python3 -m pip install -r requirements.txt
         [ -f packages/$PACKAGE/requirements.txt ] && python3 -m pip install -r packages/$PACKAGE/requirements.txt || true
 
-    - name: Setup CMake 3.24
-      shell: bash
-      run: |
-        sudo apt-get purge cmake -y
-        pip install cmake==3.24
-        sudo ln -s /usr/local/bin/cmake /usr/bin/cmake
-
     - name: Invoke Python build script
       shell: bash
       run: |

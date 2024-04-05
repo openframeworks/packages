@@ -44,7 +44,7 @@ jobs:
               CXX_COMPILER_PACKAGE: g++-mingw-w64-x86-64, 
               CC_COMPILER: x86_64-w64-mingw32-gcc, 
               CXX_COMPILER: x86_64-w64-mingw32-g++, 
-              TOOLCHAIN_FILE: "",
+              TOOLCHAIN_FILE: "toolchains/mingw-linux.cmake",
               ARCHITECTURE: x64
             }
           - { os: windows-2022, 
