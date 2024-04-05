@@ -24,9 +24,9 @@ runs:
     - name: Setup CMake 3.24
       shell: bash
       run: |
-        apt purge cmake -y
+        sudo apt-get purge cmake -y
         pip install cmake==3.24
-        ln -s /usr/local/bin/cmake /usr/bin/cmake
+        sudo ln -s /usr/local/bin/cmake /usr/bin/cmake
 
     - name: Invoke Python build script
       shell: bash
