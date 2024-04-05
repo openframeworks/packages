@@ -28,6 +28,7 @@ class Builder(LibraryBuilder):
                 "-DCURL_USE_MBEDTLS=ON",
                 "-DSHARE_LIB_OBJECT=OFF",
                 f'-DCMAKE_PREFIX_PATH="{self.get_dependency_dir("mbedtls")}"',
+                f'-DMbedTLS_DIR="{os.path.join(self.get_dependency_dir("mbedtls"), "lib", "cmake", "MbedTLS")}"',
             ]
         )
         
