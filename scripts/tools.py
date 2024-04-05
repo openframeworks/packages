@@ -99,7 +99,7 @@ class LibraryBuilder:
             cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
             cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
         
-        if self.toolchain_file != None:
+        if self.toolchain_file != None and self.toolchain_file != "":
             cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE={os.path.join(self.repo_dir, self.toolchain_file)}')
 
         cmake_args.append(f'-DBUILD_SHARED_LIBS=OFF')
