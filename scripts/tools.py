@@ -113,9 +113,6 @@ class LibraryBuilder:
                 cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
                 cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
 
-        if self.compiler_id != 'msvc':
-            cmake_args.append(f'-j$(nproc)')
-
         cmake_args.append(f'-DBUILD_SHARED_LIBS=OFF')
         cmake_args.append(f'-DPython_ROOT_DIR={os.path.dirname(sys.executable)}')
         cmake_args.append(f'-DPython3_ROOT_DIR={os.path.dirname(sys.executable)}')
@@ -139,14 +136,18 @@ class LibraryBuilder:
         args_release.append(' '.join(cmake_args))
         args_release.append(' '.join(cmake_args_release))
 
+        cmake_build_args = []
+        if self.compiler_id != 'msvc':
+            cmake_build_args.append(f'-j$(nproc)')
+
         log(f'Building Debug configuration ...')
         self.cmd(f'cmake -G Ninja {self.source_dir} -B {self.debug_build_dir} {" ".join(args_debug)}')
-        self.cmd(f'cmake --build {self.debug_build_dir} --config Debug --target install')
+        self.cmd(f'cmake --build {self.debug_build_dir} --config Debug --target install {" ".join(cmake_build_args)}')
         log(f'Building Debug configuration ... Done')
 
         log(f'Building Release configuration ...')
         self.cmd(f'cmake -G Ninja {self.source_dir} -B {self.release_build_dir} {" ".join(args_release)}')
-        self.cmd(f'cmake --build {self.release_build_dir} --config Release --target install')
+        self.cmd(f'cmake --build {self.release_build_dir} --config Release --target install {" ".join(cmake_build_args)}')
         log(f'Building Release configuration ... Done')
 
     def archive_generic_package(self, files = None):
