@@ -8,7 +8,7 @@ class Builder(LibraryBuilder):
         self.source_git_repo("https://github.com/assimp/assimp.git", "v5.3.1")
 
     def build(self):
-        self.build_generic_cmake_project()
+        self.build_generic_cmake_project([ "-DASSIMP_WARNINGS_AS_ERRORS=OFF" ])
         
     def package(self):
         self.archive_generic_package()
