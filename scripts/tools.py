@@ -113,6 +113,9 @@ class LibraryBuilder:
                 cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
                 cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
 
+        if self.compiler_id != 'msvc':
+            cmake_args.append(f'-j$(nproc)')
+
         cmake_args.append(f'-DBUILD_SHARED_LIBS=OFF')
         cmake_args.append(f'-DPython_ROOT_DIR={os.path.dirname(sys.executable)}')
         cmake_args.append(f'-DPython3_ROOT_DIR={os.path.dirname(sys.executable)}')
