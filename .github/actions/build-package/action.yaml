@@ -7,9 +7,16 @@ runs:
     - uses: seanmiddleditch/gha-setup-ninja@master
 
     - uses: ilammy/msvc-dev-cmd@v1
-      if: contains(matrix.cfg.ARCHITECTURE, '-x64-')
+      if: contains(matrix.cfg.ARCHITECTURE, '-x64-msvc')
       with:
         arch: x64
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      if: contains(matrix.cfg.ARCHITECTURE, '-arm64-msvc')
+      with:
+        arch: amd64_arm64
+
+    # TODO: Add Windows ARM64EC architecture
 
     - uses: shogo82148/actions-setup-perl@v1
       with:
