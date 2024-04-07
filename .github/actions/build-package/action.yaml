@@ -24,6 +24,7 @@ runs:
     - uses: egor-tensin/setup-mingw@v2
       if: matrix.cfg.COMPILER_ID == 'mingw64'
       with:
+        static: 0
         platform: x64
 
     - name: Invoke Python build script
