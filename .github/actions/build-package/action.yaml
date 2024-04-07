@@ -23,7 +23,7 @@ runs:
         [ -f packages/$PACKAGE/requirements.txt ] && python3 -m pip install -r packages/$PACKAGE/requirements.txt || true
         
     - uses: egor-tensin/setup-mingw@v2
-      if: matrix.cfg.COMPILER_ID == 'mingw64'
+      if: contains(matrix.cfg.triple, '-mingw64')
       with:
         static: 0
         platform: x64

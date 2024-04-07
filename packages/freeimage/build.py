@@ -6,7 +6,7 @@ class Builder(LibraryBuilder):
 
     def source(self):
         # self.source_git_repo("https://github.com/danoli3/FreeImage.git", "test3.19.0")
-        self.source_git_repo("https://github.com/HerrNamenlos123/danoli3-FreeImage.git", "master")
+        self.source_git_repo("https://github.com/danoli3/FreeImage.git", "master")
 
     def build(self):
         self.build_generic_cmake_project()
