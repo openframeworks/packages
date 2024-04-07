@@ -32,6 +32,14 @@ class LibraryBuilder:
             self.cxx_compiler = "c++"
             self.cc_compiler_package = ""
             self.cxx_compiler_package = ""
+        elif self.triple == "windows-x64-msvc":
+            self.compiler_id = "msvc"
+            self.cc_compiler = ""
+            self.cxx_compiler = ""
+            self.cc_compiler_package = ""
+            self.cxx_compiler_package = ""
+        else:
+            raise LookupError(f"Triple {self.triple} is not known to the system")
 
         self.repo_dir = os.getcwd()
         self.working_dir = os.path.join(self.repo_dir, 'temp', self.name)
