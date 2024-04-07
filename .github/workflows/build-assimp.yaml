@@ -38,13 +38,13 @@ jobs:
               TOOLCHAIN_FILE: "",
               ARCHITECTURE: x64
             }
-          - { os: ubuntu-20.04,
+          - { os: windows-2022,
               COMPILER_ID: mingw64,
-              CC_COMPILER_PACKAGE: gcc-mingw-w64-x86-64, 
-              CXX_COMPILER_PACKAGE: g++-mingw-w64-x86-64, 
-              CC_COMPILER: x86_64-w64-mingw32-gcc, 
-              CXX_COMPILER: x86_64-w64-mingw32-g++, 
-              TOOLCHAIN_FILE: "toolchains/mingw-linux.cmake",
+              CC_COMPILER_PACKAGE: "", 
+              CXX_COMPILER_PACKAGE: "", 
+              CC_COMPILER: cc, 
+              CXX_COMPILER: c++, 
+              TOOLCHAIN_FILE: "",
               ARCHITECTURE: x64
             }
           - { os: windows-2022, 
