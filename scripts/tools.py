@@ -138,7 +138,7 @@ class LibraryBuilder:
 
         cmake_build_args = []
         if self.compiler_id != 'msvc':
-            cmake_build_args.append(f'-j$(nproc)')
+            cmake_build_args.append(f'-j{os.cpu_count()}')
 
         log(f'Building Debug configuration ...')
         self.cmd(f'cmake -G Ninja {self.source_dir} -B {self.debug_build_dir} {" ".join(args_debug)}')
