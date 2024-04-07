@@ -13,31 +13,43 @@ class LibraryBuilder:
     def __init__(self):
         self.triple = os.environ.get('TRIPLE')
 
-        # self.toolchain_file = ""
-        if self.triple == "linux-x64-gcc7":
-            self.compiler_id = "gcc7"
-            self.cc_compiler = "gcc-7"
-            self.cxx_compiler = "g++-7"
-            self.cc_compiler_package = "gcc-7"
-            self.cxx_compiler_package = "g++-7"
-        elif self.triple == "linux-x64-clang7":
-            self.compiler_id = "clang7"
-            self.cc_compiler = "clang-7"
-            self.cxx_compiler = "clang++-7"
-            self.cc_compiler_package = "clang-7"
-            self.cxx_compiler_package = "clang++-7"
+        # All of this is only valid for ubuntu-20.04 and windows-2022
+        if self.triple == "linux-x64-gcc9":
+            self.cc_compiler = "gcc"
+            self.cxx_compiler = "g++"
+            self.cc_compiler_package = "gcc"
+            self.cxx_compiler_package = "g++"
+            self.toolchain_file = ""
+        elif self.triple == "linux-x64-clang10":
+            self.cc_compiler = "clang"
+            self.cxx_compiler = "clang++"
+            self.cc_compiler_package = "clang"
+            self.cxx_compiler_package = "clang++"
+            self.toolchain_file = ""
+        elif self.triple == "linux-armv7-gcc9":
+            self.cc_compiler = ""
+            self.cxx_compiler = ""
+            self.cc_compiler_package = "gcc-9-arm-linux-gnueabi"
+            self.cxx_compiler_package = "g++-9-arm-linux-gnueabi"
+            self.toolchain_file = "toolchains/gcc-armv7.cmake"
+        elif self.triple == "linux-aarch64-gcc9":
+            self.cc_compiler = ""
+            self.cxx_compiler = ""
+            self.cc_compiler_package = "gcc-9-aarch64-linux-gnu"
+            self.cxx_compiler_package = "g++-9-aarch64-linux-gnu"
+            self.toolchain_file = "toolchains/gcc-aarch64.cmake"
         elif self.triple == "windows-x64-mingw64":
-            self.compiler_id = "mingw64"
             self.cc_compiler = "cc"
             self.cxx_compiler = "c++"
             self.cc_compiler_package = ""
             self.cxx_compiler_package = ""
+            self.toolchain_file = ""
         elif self.triple == "windows-x64-msvc":
-            self.compiler_id = "msvc"
-            self.cc_compiler = ""
-            self.cxx_compiler = ""
+            self.cc_compiler = "msvc"
+            self.cxx_compiler = "msvc"
             self.cc_compiler_package = ""
             self.cxx_compiler_package = ""
+            self.toolchain_file = ""
         else:
             raise LookupError(f"Triple {self.triple} is not known to the system")
 
@@ -129,12 +141,12 @@ class LibraryBuilder:
                                     cmake_args_debug = [], 
                                     cmake_args_release = []):
 
-        # if self.toolchain_file != None and self.toolchain_file != "":
-        #     cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE={os.path.join(self.repo_dir, self.toolchain_file)}')
-        # else:
-        if self.compiler_id != 'msvc':
-            cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
-            cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
+        if self.toolchain_file != None and self.toolchain_file != "":
+            cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE={os.path.join(self.repo_dir, self.toolchain_file)}')
+        else:
+            if self.cc_compiler != 'msvc':
+                cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
+                cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
 
         cmake_args.append(f'-DBUILD_SHARED_LIBS=OFF')
         cmake_args.append(f'-DPython_ROOT_DIR={os.path.dirname(sys.executable)}')
@@ -160,7 +172,7 @@ class LibraryBuilder:
         args_release.append(' '.join(cmake_args_release))
 
         cmake_build_args = []
-        if self.compiler_id != 'msvc':
+        if self.cc_compiler != 'msvc':
             cmake_build_args.append(f'-j{os.cpu_count()}')
 
         log(f'Building Debug configuration ...')

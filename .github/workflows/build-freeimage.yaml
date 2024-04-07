@@ -20,8 +20,10 @@ jobs:
       fail-fast: false
       matrix:
         cfg:
-          - { os: ubuntu-20.04, triple: linux-x64-clang7 }
-          - { os: ubuntu-20.04, triple: linux-x64-gcc7 }
+          - { os: ubuntu-20.04, triple: linux-x64-clang10 }
+          - { os: ubuntu-20.04, triple: linux-x64-gcc9 }
+          - { os: ubuntu-20.04, triple: linux-armv7-gcc9 }
+          - { os: ubuntu-20.04, triple: linux-aarch64-gcc9 }
           - { os: windows-2022, triple: windows-x64-mingw64 }
           - { os: windows-2022, triple: windows-x64-msvc }
 
