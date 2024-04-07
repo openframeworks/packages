@@ -15,6 +15,11 @@ runs:
       with:
         perl-version: '5.32'
 
+    - name: Install additional packages
+      if: matrix.cfg.os == 'ubuntu-20.04'
+      shell: bash
+      run: sudo apt update && sudo apt install -y g++-9 g++-9-arm-linux-gnueabi g++-9-aarch64-linux-gnu clang++-10
+
     - name: Install Python deps
       shell: bash
       run: |

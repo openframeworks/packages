@@ -11,10 +11,6 @@ def main():
 
     package_name = sys.argv[1]
     builder = getattr(importlib.import_module(f'packages.{package_name}.build'), 'Builder')()
-
-    tools.log("Installing build dependencies ...")
-    builder.install_build_dependencies()
-    tools.log("Installing build dependencies ... Done")
     
     if hasattr(builder, 'source'):
         tools.log("Sourcing build files ...")
