@@ -7,7 +7,7 @@ runs:
     - uses: seanmiddleditch/gha-setup-ninja@master
 
     - uses: ilammy/msvc-dev-cmd@v1
-      if: startsWith(split(matrix.cfg.ARCHITECTURE, '-')[1], 'x64')
+      if: contains(matrix.cfg.ARCHITECTURE, '-x64-')
       with:
         arch: x64
 
