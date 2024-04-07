@@ -7,8 +7,9 @@ runs:
     - uses: seanmiddleditch/gha-setup-ninja@master
 
     - uses: ilammy/msvc-dev-cmd@v1
+      if: startsWith(split(matrix.cfg.ARCHITECTURE, '-')[1], 'x64')
       with:
-        arch: ${{matrix.cfg.ARCHITECTURE}}
+        arch: x64
 
     - uses: shogo82148/actions-setup-perl@v1
       with:
@@ -30,14 +31,7 @@ runs:
     - name: Invoke Python build script
       shell: bash
       run: |
-        FULL_PACKAGE_NAME=${{matrix.cfg.FULL_PACKAGE_NAME}} \
-        COMPILER_ID=${{matrix.cfg.COMPILER_ID}} \
-        CC_COMPILER=${{matrix.cfg.CC_COMPILER}} \
-        CC_COMPILER_PACKAGE=${{matrix.cfg.CC_COMPILER_PACKAGE}} \
-        CXX_COMPILER=${{matrix.cfg.CXX_COMPILER}} \
-        CXX_COMPILER_PACKAGE=${{matrix.cfg.CXX_COMPILER_PACKAGE}} \
-        TOOLCHAIN_FILE=${{matrix.cfg.TOOLCHAIN_FILE}} \
-        ARCHITECTURE=${{matrix.cfg.ARCHITECTURE}} \
+        TRIPLE=${{matrix.cfg.triple}} \
         python3 build.py $PACKAGE
   
     - name: Upload files to a GitHub release

@@ -11,13 +11,27 @@ def log(msg):
 
 class LibraryBuilder:
     def __init__(self):
-        self.compiler_id = os.environ.get('COMPILER_ID', "unknown")
-        self.cc_compiler = os.environ.get('CC_COMPILER', "unknown")
-        self.cxx_compiler = os.environ.get('CXX_COMPILER', "unknown")
-        self.cc_compiler_package = os.environ.get('CC_COMPILER_PACKAGE', None)
-        self.cxx_compiler_package = os.environ.get('CXX_COMPILER_PACKAGE', None)
-        self.toolchain_file = os.environ.get('TOOLCHAIN_FILE', None)
-        self.architecture = os.environ.get('ARCHITECTURE', 'unknown')
+        self.triple = os.environ.get('TRIPLE')
+
+        # self.toolchain_file = ""
+        if self.triple == "linux-x64-gcc7":
+            self.compiler_id = "gcc7"
+            self.cc_compiler = "gcc-7"
+            self.cxx_compiler = "g++-7"
+            self.cc_compiler_package = "gcc-7"
+            self.cxx_compiler_package = "g++-7"
+        elif self.triple == "linux-x64-clang7":
+            self.compiler_id = "clang7"
+            self.cc_compiler = "clang-7"
+            self.cxx_compiler = "clang++-7"
+            self.cc_compiler_package = "clang-7"
+            self.cxx_compiler_package = "clang++-7"
+        elif self.triple == "windows-x64-mingw64":
+            self.compiler_id = "mingw64"
+            self.cc_compiler = "cc"
+            self.cxx_compiler = "c++"
+            self.cc_compiler_package = ""
+            self.cxx_compiler_package = ""
 
         self.repo_dir = os.getcwd()
         self.working_dir = os.path.join(self.repo_dir, 'temp', self.name)
@@ -28,7 +42,7 @@ class LibraryBuilder:
         self.archive_dir = os.path.join(self.working_dir, 'archive')
         self.output_dir = os.path.join(self.repo_dir, 'out')
 
-        self.package_suffix = f"-{self.version}-{platform.system().lower()}-{self.architecture}-{self.compiler_id}"
+        self.package_suffix = f"-{self.version}-{self.triple}"
         self.archive_filename = f'{self.name}{self.package_suffix}.tar.gz'
 
         log(f'Building package {self.name}/{self.version}')
@@ -75,9 +89,10 @@ class LibraryBuilder:
 
     def install_build_dependencies(self, extra_unix_dependencies = []):
         if platform.system() == 'Linux':
-            if self.compiler_id != "unknown" and self.compiler_id != 'msvc':
-                extra_unix_dependencies.append(os.environ['CC_COMPILER_PACKAGE'])
-                extra_unix_dependencies.append(os.environ['CXX_COMPILER_PACKAGE'])
+            if self.cc_compiler_package != "":
+                extra_unix_dependencies.append(self.cc_compiler_package)
+            if self.cxx_compiler_package != "":
+                extra_unix_dependencies.append(self.cxx_compiler_package)
             
             deps = ' '.join(extra_unix_dependencies)
             log(f"Installing extra unix dependencies ...")
@@ -89,7 +104,7 @@ class LibraryBuilder:
         depsdir = self.get_dependency_dir(package)
         log(f'Fetching package {package}/{version} ...')
         if not os.path.exists(depsdir):
-            url = "https://github.com/openframeworks/packages/releases/download/latest/" + package + "-" + version + "-" + platform.system().lower() + "-" + self.architecture + "-" + self.compiler_id + ".tar.gz"
+            url = f"https://github.com/openframeworks/packages/releases/download/latest/{package}-{version}-{self.triple}.tar.gz"
             log(f'Downloading {url} ...')
             archive = tarfile.open(fileobj=urllib.request.urlopen(url), mode="r|gz")
             archive.extractall(path=depsdir)
@@ -106,12 +121,12 @@ class LibraryBuilder:
                                     cmake_args_debug = [], 
                                     cmake_args_release = []):
 
-        if self.toolchain_file != None and self.toolchain_file != "":
-            cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE={os.path.join(self.repo_dir, self.toolchain_file)}')
-        else:
-            if self.compiler_id != "unknown" and self.compiler_id != 'msvc':
-                cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
-                cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
+        # if self.toolchain_file != None and self.toolchain_file != "":
+        #     cmake_args.append(f'-DCMAKE_TOOLCHAIN_FILE={os.path.join(self.repo_dir, self.toolchain_file)}')
+        # else:
+        if self.compiler_id != 'msvc':
+            cmake_args.append(f'-DCMAKE_C_COMPILER={self.cc_compiler}')
+            cmake_args.append(f'-DCMAKE_CXX_COMPILER={self.cxx_compiler}')
 
         cmake_args.append(f'-DBUILD_SHARED_LIBS=OFF')
         cmake_args.append(f'-DPython_ROOT_DIR={os.path.dirname(sys.executable)}')
