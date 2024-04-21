@@ -23,15 +23,15 @@ runs:
         perl-version: '5.32'
 
     - name: Install additional packages
-      if: matrix.cfg.os == 'ubuntu-20.04'
+      if: contains(matrix.cfg.os, 'ubuntu-')
       shell: bash
       run: sudo apt update && sudo apt install -y gcc-9 g++-9 gcc-9-arm-linux-gnueabihf g++-9-arm-linux-gnueabihf gcc-9-aarch64-linux-gnu g++-9-aarch64-linux-gnu clang-10
 
     - name: Install Python deps
       shell: bash
       run: |
-        python3 -m venv ~/venv
-        source ~/venv/bin/activate
+        python3 -m venv venv
+        source venv/bin/activate
         python3 -m pip install --upgrade pip
         python3 -m pip install -r requirements.txt
         [ -f packages/$PACKAGE/requirements.txt ] && python3 -m pip install -r packages/$PACKAGE/requirements.txt || true
@@ -42,10 +42,18 @@ runs:
         static: 0
         platform: x64
 
-    - name: Invoke Python build script
+    - name: Invoke Python build script [Non-Windows]
+      if: ${{ !contains(matrix.cfg.os, 'windows-') }}
       shell: bash
       run: |
-        source ~/venv/bin/activate
+        source venv/bin/activate
+        TRIPLE=${{matrix.cfg.triple}} python3 build.py $PACKAGE
+
+    - name: Invoke Python build script [Windows]
+      if: ${{ contains(matrix.cfg.os, 'windows-') }}
+      shell: bash
+      run: |
+        venv/bin/activate.bat
         TRIPLE=${{matrix.cfg.triple}} python3 build.py $PACKAGE
   
     - name: Upload files to a GitHub release
