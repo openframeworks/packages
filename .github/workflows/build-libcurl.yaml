@@ -28,6 +28,8 @@ jobs:
           - { os: windows-2022, triple: windows-x64-msvc143 }
           - { os: windows-2022, triple: windows-arm64-msvc143 }
           - { os: windows-2022, triple: windows-x64-mingw64 }
+          - { os: macos-14, triple: macos-x64-gcc }
+          - { os: macos-14, triple: macos-arm64-gcc }
 
     steps:
       - name: Checkout repository
