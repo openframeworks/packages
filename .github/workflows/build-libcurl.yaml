@@ -24,8 +24,8 @@ jobs:
           - { os: ubuntu-20.04, triple: linux-x64-gcc9 }
           - { os: ubuntu-20.04, triple: linux-armv7-gcc9 }
           - { os: ubuntu-20.04, triple: linux-aarch64-gcc9 }
-          - { os: windows-2022, triple: windows-x64-msvc }
-          - { os: windows-2022, triple: windows-arm64-msvc }
+          - { os: windows-2022, triple: windows-x64-msvc143 }
+          - { os: windows-2022, triple: windows-arm64-msvc143 }
           - { os: windows-2022, triple: windows-x64-mingw64 }
 
     steps:

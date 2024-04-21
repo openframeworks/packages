@@ -7,12 +7,12 @@ runs:
     - uses: seanmiddleditch/gha-setup-ninja@master
 
     - uses: ilammy/msvc-dev-cmd@v1
-      if: contains(matrix.cfg.ARCHITECTURE, '-x64-msvc')
+      if: contains(matrix.cfg.ARCHITECTURE, '-x64-msvc143')
       with:
         arch: x64
 
     - uses: ilammy/msvc-dev-cmd@v1
-      if: contains(matrix.cfg.ARCHITECTURE, '-arm64-msvc')
+      if: contains(matrix.cfg.ARCHITECTURE, '-arm64-msvc143')
       with:
         arch: amd64_arm64
 
