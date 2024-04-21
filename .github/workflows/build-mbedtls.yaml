@@ -6,6 +6,7 @@ on:
       - .github/actions/build-package/action.yaml
       - .github/workflows/build-mbedtls.yaml
       - packages/mbedtls/**
+      - toolchains/**
       - build.py
       - scripts/tools.py
 

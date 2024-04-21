@@ -6,6 +6,7 @@ on:
       - .github/actions/build-package/action.yaml
       - .github/workflows/build-libcurl.yaml
       - packages/libcurl/**
+      - toolchains/**
       - build.py
       - scripts/tools.py
 
