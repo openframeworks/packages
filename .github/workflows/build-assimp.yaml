@@ -9,6 +9,7 @@ on:
       - toolchains/**
       - build.py
       - scripts/tools.py
+      - requirements.txt
 
 jobs:
   build:
